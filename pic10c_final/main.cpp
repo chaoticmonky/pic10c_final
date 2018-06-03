@@ -11,15 +11,15 @@
 
 
 int main() {
-    std::shared_ptr<Agents> a1(new predator);
-    std::shared_ptr<Agents> a2(new tit_4_tat);
-//    Agents* a1 = new predator;
-//    Agents* a2 = new tit_4_tat;
-    
-    (is_predator(a1))? std::cout << "predator it is:"  << std::endl: std::cout << "it isnt'" << std::endl;
-    (is_predator(a2))? std::cout << "predator it is:"  << std::endl: std::cout << "it isnt'" << std::endl;
-    
-    (a1 < a2)? std::cout << "a1 is predator and a2 is t"  << std::endl: std::cout << "a1 is not predator" << std::endl;
-    (a2 < a1)? std::cout << "a2 is predator and a1 is t"  << std::endl: std::cout << "a2 is not predator" << std::endl;
+//    std::shared_ptr<Agents> a1(new predator);
+//    std::shared_ptr<Agents> a2(new tit_4_tat);
+//
+//    (is_predator(a1))? std::cout << "predator it is:"  << std::endl: std::cout << "it isnt'" << std::endl;
+//    (is_predator(a2))? std::cout << "predator it is:"  << std::endl: std::cout << "it isnt'" << std::endl;
+//
+//    (a1 < a2)? std::cout << "a1 is predator and a2 is t"  << std::endl: std::cout << "a1 is not predator" << std::endl;
+//    (a2 < a1)? std::cout << "a2 is predator and a1 is t"  << std::endl: std::cout << "a2 is not predator" << std::endl;
+    simulation s1(10);
+    std::cout << s1.num_of_predators() << " :number of predators alive" << std::endl;
     return 0;
 }

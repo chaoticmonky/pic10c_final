@@ -37,6 +37,12 @@ simulation::simulation(std::size_t sz)//constructor
 {
     //remember to use vector.push_back(std::make_shared<Predator>();
     //to make sure that the smart pointer is for the base class but it works with whatever the pointer actually points to
+    for (std::size_t i = 0; i<sz; ++i) {
+        all_players.push_back( std::shared_ptr<Agents> (new predator) );
+    }
+    for (std::size_t i = 0; i<sz; ++i) {
+        all_players.push_back( std::shared_ptr<Agents> (new tit_4_tat) );
+    }
 }
 
 
@@ -50,6 +56,28 @@ simulation::simulation(std::size_t sz)//constructor
 void simulation::run_simulation()
 {
     
+}
+
+/**
+ member function battle. makes the agents fight against each other.
+ @returns: the number of predators still alive
+ */
+size_t simulation::num_of_predators()
+{
+    if (is_predator(all_players[-1])) //only predators are left in the pool
+    {
+        return all_players.size();
+    }
+    else //there is at least one tit_4_tat agent alive
+    {
+        for (std::size_t i = 0; i<all_players.size(); ++i)
+        {
+            if (all_players[i]<all_players[i+1]) {
+                return i+1;
+            }
+        }
+    }
+    return 0;
 }
 
 /**
