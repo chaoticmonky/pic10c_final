@@ -59,13 +59,14 @@ public:
     simulation(std::size_t);
     void run_simulation(); //run the simulation, updating the values of each agent in the vector and storing a map of the number of each type of agents
     
-    void battle(Agents agent1, Agents agent2);
+    void battle(const std::shared_ptr<Agents>, const std::shared_ptr<Agents>);
     
     size_t num_of_predators(); //finds the number of predator agents in the vector
 };
 
 
-
+bool operator<(const std::shared_ptr<Agents>, const std::shared_ptr<Agents>);
+bool operator==(const std::shared_ptr<Agents>, const std::shared_ptr<Agents>);
 
 bool is_predator(const std::shared_ptr<Agents> an_agent);
 
