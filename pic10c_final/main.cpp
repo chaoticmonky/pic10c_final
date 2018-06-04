@@ -28,6 +28,9 @@ int main() {
     s1.battle(0, 5);
     s1.battle(0, 11);
     s1.battle(11, 5);
-    s1.battle(12, 13);
+    for(auto i = 0; i<10;++i) s1.battle(0, 10+i);
+    
+    s1.check_reproducability();
+    std::cout << s1.num_of_predators() << " :number of predators alive" << std::endl;
     return 0;
 }

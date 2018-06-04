@@ -117,13 +117,11 @@ void simulation::battle(const std::size_t first, const std::size_t second)
         {
             agent1->add_food(reward_matrix[3]);
             agent2->add_food(reward_matrix[3]);
-            std::cout << "Defect vs Defect" << std::endl;
         }
         else //tit_4_tat vs tit_4_tat
         {
             agent1->add_food(reward_matrix[0]);
             agent2->add_food(reward_matrix[0]);
-            std::cout << "Coop vs Coop" << std::endl;
         }
     }
     else if (agent1 < agent2)//agent1 is predator while agent2 tit_4_tat
@@ -152,6 +150,23 @@ void simulation::battle(const std::size_t first, const std::size_t second)
         {
             agent1->add_food(reward_matrix[3]);
             agent2->add_food(reward_matrix[3]);
+        }
+    }
+}
+
+/**
+ void member function check_reproducability
+ checks if any agent has enough food to reproduce
+ if so, then it adds another agent of the same type
+*/
+void simulation::check_reproducability()
+{
+    for (std::size_t i = 0; i<all_players.size(); ++i) {
+        if (all_players[i]->get_food()>=30)
+        {
+            all_players[i]->add_food(-20);//10 is the cost for reproducing and 10 is the food carried over
+            //if the agent is a predator, it is added at the beginning. if the agent is tit_4_tat, it is added at the end
+            (is_predator(all_players[i]))? all_players.insert(all_players.begin(), std::shared_ptr<Agents> (new predator)):all_players.insert(all_players.end(),std::shared_ptr<Agents> (new tit_4_tat));
         }
     }
 }

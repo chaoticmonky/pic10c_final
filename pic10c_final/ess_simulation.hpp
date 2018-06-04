@@ -27,6 +27,7 @@ protected:
 public:
     Agents(): health(10), food(10){}
     virtual ~Agents() = default; //pure virtual destructor to not allow creation of
+    std::size_t get_food(){return food;}
     void add_food(int);
     void sub_health();
     virtual void cheated() = 0;
