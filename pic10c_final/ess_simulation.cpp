@@ -43,7 +43,7 @@ bool operator==(const std::shared_ptr<Agents> agent1, const std::shared_ptr<Agen
 }
 
 
-simulation::simulation(const std::size_t sz, int* matrix): reward_matrix(matrix)//constructor
+simulation::simulation(const std::size_t sz, int* matrix, std::size_t food_limit): reward_matrix(matrix), reproReq(food_limit)//constructor
 {
     //remember to use vector.push_back(std::make_shared<Predator>();
     //to make sure that the smart pointer is for the base class but it works with whatever the pointer actually points to
