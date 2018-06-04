@@ -30,7 +30,7 @@ int main() {
     s1.battle(11, 5);
     for(auto i = 0; i<10;++i) s1.battle(0, 10+i);
     
-    s1.check_reproducability();
+    s1.kill_old();
     std::cout << s1.num_of_predators() << " :number of predators alive" << std::endl;
     return 0;
 }

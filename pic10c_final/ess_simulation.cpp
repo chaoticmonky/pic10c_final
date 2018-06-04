@@ -17,7 +17,7 @@ void Agents::add_food(int increase)
 }
 
 
-void Agents::sub_health(){--health;} //decreases health by one
+void Agents::sub_health(){--health; std::cout << "health of agent decreased to :" << health<< std::endl;} //decreases health by one
 
 bool is_predator(const std::shared_ptr<Agents> an_agent)
 {
@@ -58,14 +58,30 @@ simulation::simulation(const std::size_t sz, int* matrix, std::size_t food_limit
 
 /**
  member function run_simulation. Makes different agents fight against each other
- Three stages:
+ @parameter: iterations is the number of times each round of fighting happens
+ Three stages are done for iteration number of times:
  I: all agents are randomly selected and made to fight each other, implicitly updating the attributes
  II: kills or gives birth to new agents based on their attributes
  III: records the number of different agents alive for data analysis
  */
-void simulation::run_simulation()
+void simulation::run_simulation(std::size_t iterations)
 {
-    ;
+    for(auto i=0; i<iterations; ++i)
+    {
+        //Stage I. fighting
+        for (auto j=0; j<all_players.size(); ++j)
+        {
+            ;
+        }
+        
+        //Stage II. deaths and births
+        
+        check_reproducability();//all new ones are born
+        kill_old();
+        
+        //Stage III. storing data
+        
+    }
 }
 
 /**
@@ -96,6 +112,11 @@ void tit_4_tat::cheated()
     decieved = true;
 }
 
+void tit_4_tat::reversed_cheated()
+{
+    decieved = false;
+}
+
 bool tit_4_tat::check_cheated()//returns true if the agent was cheated last turn
 {
     return decieved;
@@ -120,8 +141,25 @@ void simulation::battle(const std::size_t first, const std::size_t second)
         }
         else //tit_4_tat vs tit_4_tat
         {
+            if (agent1->check_cheated())//agent1 was cheated last time
+            {
+                agent1->add_food(reward_matrix[2]); //agent1 has won
+                agent2->add_food(reward_matrix[1]); //agent2 has lost
+                agent2->cheated();
+                agent1->reversed_cheated();
+            }
+            else if (agent2->check_cheated())//agent2 was cheated last time
+            {
+                agent2->add_food(reward_matrix[2]); //agent1 has won
+                agent1->add_food(reward_matrix[1]); //agent2 has lost
+                agent1->cheated();
+                agent2->reversed_cheated();
+            }
+            else //both cooperate
+            {
             agent1->add_food(reward_matrix[0]);
             agent2->add_food(reward_matrix[0]);
+            }
         }
     }
     else if (agent1 < agent2)//agent1 is predator while agent2 tit_4_tat
@@ -161,12 +199,26 @@ void simulation::battle(const std::size_t first, const std::size_t second)
 */
 void simulation::check_reproducability()
 {
-    for (std::size_t i = 0; i<all_players.size(); ++i) {
+    for (std::size_t i = 0; i<all_players.size(); ++i)
+    {
         if (all_players[i]->get_food()>=30)
         {
             all_players[i]->add_food(-20);//10 is the cost for reproducing and 10 is the food carried over
             //if the agent is a predator, it is added at the beginning. if the agent is tit_4_tat, it is added at the end
             (is_predator(all_players[i]))? all_players.insert(all_players.begin(), std::shared_ptr<Agents> (new predator)):all_players.insert(all_players.end(),std::shared_ptr<Agents> (new tit_4_tat));
         }
+    }
+}
+
+/**
+ void member function check_reproducability
+ checks if any agent has 0 health
+ if so, then it kills that agent
+ */
+void simulation::kill_old()
+{
+    for (std::size_t i = all_players.size()-1; i<all_players.size(); --i)
+    {
+        if (all_players[i]->get_health() <= 0) all_players.erase(all_players.begin() + i);//if the agent has health 0, it is deleted
     }
 }

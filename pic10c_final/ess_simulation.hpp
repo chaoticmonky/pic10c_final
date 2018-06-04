@@ -21,16 +21,18 @@
 class Agents
 {
 protected:
-    std::size_t health;
+    int health;
     std::size_t food;
 
 public:
     Agents(): health(10), food(10){}
     virtual ~Agents() = default; //pure virtual destructor to not allow creation of
     std::size_t get_food(){return food;}
+    int get_health(){return health;}
     void add_food(int);
     void sub_health();
     virtual void cheated() = 0;
+    virtual void reversed_cheated() = 0;
     virtual bool check_cheated() = 0;
 };
 
@@ -39,7 +41,9 @@ class predator : public Agents
 public:
     predator(): Agents(){}//constructor
     ~predator() = default;
+    //overriding the functions to make sure predator is not an abstract class
     void cheated() override{}
+    void reversed_cheated() override{}
     bool check_cheated() override {return true;}
     
 };
@@ -52,6 +56,7 @@ public:
     tit_4_tat(): Agents(), decieved(false){}//constructor
     ~tit_4_tat() = default;
     void cheated() override;
+    void reversed_cheated() override;
     bool check_cheated() override;
 };
 
@@ -69,12 +74,13 @@ private:
     
 public:
     simulation(const std::size_t, int*, std::size_t);
-    void run_simulation(); //run the simulation, updating the values of each agent in the vector and storing a map of the number of each type of agents
+    void run_simulation(std::size_t); //run the simulation, updating the values of each agent in the vector and storing a map of the number of each type of agents
     
     void battle(const std::size_t, const std::size_t);
     
     size_t num_of_predators(); //finds the number of predator agents in the vector
     void check_reproducability(); //checks if any agent can reproduce
+    void kill_old();
 };
 
 
