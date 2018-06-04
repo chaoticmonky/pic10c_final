@@ -8,6 +8,16 @@
 
 #include "ess_simulation.hpp"
 
+/**
+ member variable add_food. adds the food in the agent's storage
+*/
+void Agents::add_food(int increase)
+{
+    food+=increase;
+}
+
+
+void Agents::sub_health(){--health;} //decreases health by one
 
 bool is_predator(const std::shared_ptr<Agents> an_agent)
 {
@@ -33,7 +43,7 @@ bool operator==(const std::shared_ptr<Agents> agent1, const std::shared_ptr<Agen
 }
 
 
-simulation::simulation(std::size_t sz)//constructor
+simulation::simulation(const std::size_t sz, int* matrix): reward_matrix(matrix)//constructor
 {
     //remember to use vector.push_back(std::make_shared<Predator>();
     //to make sure that the smart pointer is for the base class but it works with whatever the pointer actually points to
@@ -55,7 +65,7 @@ simulation::simulation(std::size_t sz)//constructor
  */
 void simulation::run_simulation()
 {
-    
+    ;
 }
 
 /**
@@ -64,7 +74,7 @@ void simulation::run_simulation()
  */
 size_t simulation::num_of_predators()
 {
-    if (is_predator(all_players[-1])) //only predators are left in the pool
+    if (is_predator(all_players[all_players.size()-1])) //only predators are left in the pool
     {
         return all_players.size();
     }
@@ -72,7 +82,8 @@ size_t simulation::num_of_predators()
     {
         for (std::size_t i = 0; i<all_players.size(); ++i)
         {
-            if (all_players[i]<all_players[i+1]) {
+            if (all_players[i]<all_players[i+1])
+            {
                 return i+1;
             }
         }
@@ -80,13 +91,67 @@ size_t simulation::num_of_predators()
     return 0;
 }
 
+void tit_4_tat::cheated()
+{
+    decieved = true;
+}
+
+bool tit_4_tat::check_cheated()//returns true if the agent was cheated last turn
+{
+    return decieved;
+}
 /**
  member function battle. makes the agents fight against each other.
  @parameter: agent1 is the first agent's pointer
  @parameter: agent2 is the second agent's pointer
  */
 
-void simulation::battle(const std::shared_ptr<Agents> agent1, const std::shared_ptr<Agents> agent2)
+void simulation::battle(const std::size_t first, const std::size_t second)
 {
-    ;
+    const std::shared_ptr<Agents> agent1(all_players[first]);
+    const std::shared_ptr<Agents> agent2(all_players[second]);
+    agent1->sub_health(); agent2->sub_health(); //decrease both their healths
+    if (agent1 == agent2)//if the agents are same, their strategies will be the same
+    {
+        if (is_predator(agent1)) //predator vs predator
+        {
+            agent1->add_food(reward_matrix[3]);
+            agent2->add_food(reward_matrix[3]);
+            std::cout << "Defect vs Defect" << std::endl;
+        }
+        else //tit_4_tat vs tit_4_tat
+        {
+            agent1->add_food(reward_matrix[0]);
+            agent2->add_food(reward_matrix[0]);
+            std::cout << "Coop vs Coop" << std::endl;
+        }
+    }
+    else if (agent1 < agent2)//agent1 is predator while agent2 tit_4_tat
+    {
+        if (!(agent2->check_cheated()))//agent2 was not cheated last turn
+        {
+            agent1->add_food(reward_matrix[2]); //agent1 has won
+            agent2->add_food(reward_matrix[1]); //agent2 has lost
+            agent2->cheated();
+        }
+        else //both decieved each other
+        {
+            agent1->add_food(reward_matrix[3]);
+            agent2->add_food(reward_matrix[3]);
+        }
+    }
+    else//agent2 is predator while agent1 tit_4_tat
+    {
+        if (!(agent1->check_cheated()))//agent2 was not cheated last turn
+        {
+            agent2->add_food(reward_matrix[2]); //agent1 has won
+            agent1->add_food(reward_matrix[1]); //agent2 has lost
+            agent1->cheated();
+        }
+        else //both decieved each other
+        {
+            agent1->add_food(reward_matrix[3]);
+            agent2->add_food(reward_matrix[3]);
+        }
+    }
 }
