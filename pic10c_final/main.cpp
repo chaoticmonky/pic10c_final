@@ -22,15 +22,17 @@ int main() {
 //
 //    (a1 < a2)? std::cout << "a1 is predator and a2 is t"  << std::endl: std::cout << "a1 is not predator" << std::endl;
 //    (a2 < a1)? std::cout << "a2 is predator and a1 is t"  << std::endl: std::cout << "a2 is not predator" << std::endl;
-    int matrix[4] = {2, 0, 6, 1};
-    simulation s1(10, matrix, 30);//10 agents each, with 30 food as the requirement for reproduction
+    int matrix[4] = {3, 0, 5, 1};
+    simulation s1(1000, matrix, 25);//10 agents each, with 30 food as the requirement for reproduction
     std::cout << s1.num_of_predators() << " :number of predators alive" << std::endl;
-    s1.battle(0, 5);
-    s1.battle(0, 11);
-    s1.battle(11, 5);
-    for(auto i = 0; i<10;++i) s1.battle(0, 10+i);
-    
-    s1.kill_old();
+//    s1.battle(0, 5);
+//    s1.battle(0, 11);
+//    s1.battle(11, 5);
+//    for(auto i = 0; i<10;++i) s1.battle(0, 10+i);
+//
+//    s1.kill_old();
+//    std::cout << s1.num_of_predators() << " :number of predators alive" << std::endl;
+    s1.run_simulation(300);
     std::cout << s1.num_of_predators() << " :number of predators alive" << std::endl;
     return 0;
 }

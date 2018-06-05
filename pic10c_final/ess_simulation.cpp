@@ -17,14 +17,12 @@ void Agents::add_food(int increase)
 }
 
 
-void Agents::sub_health(){--health; std::cout << "health of agent decreased to :" << health<< std::endl;} //decreases health by one
+void Agents::sub_health(){--health;} //decreases health by one
 
 bool is_predator(const std::shared_ptr<Agents> an_agent)
 {
     
     std::shared_ptr<predator> predPtr = std::dynamic_pointer_cast<predator>(an_agent); //dynamic casting to predator
-    
-    
     
     if(predPtr) return true; //if it is a predator, then return true
     
@@ -45,8 +43,6 @@ bool operator==(const std::shared_ptr<Agents> agent1, const std::shared_ptr<Agen
 
 simulation::simulation(const std::size_t sz, int* matrix, std::size_t food_limit): reward_matrix(matrix), reproReq(food_limit)//constructor
 {
-    //remember to use vector.push_back(std::make_shared<Predator>();
-    //to make sure that the smart pointer is for the base class but it works with whatever the pointer actually points to
     for (std::size_t i = 0; i<sz; ++i) {
         all_players.push_back( std::shared_ptr<Agents> (new predator) );
     }
@@ -66,21 +62,26 @@ simulation::simulation(const std::size_t sz, int* matrix, std::size_t food_limit
  */
 void simulation::run_simulation(std::size_t iterations)
 {
-    for(auto i=0; i<iterations; ++i)
+    for(int i=0; i<iterations; ++i)
     {
         //Stage I. fighting
-        for (auto j=0; j<all_players.size(); ++j)
+        auto copy = all_players;
+        std::random_shuffle(copy.begin(), copy.end());
+        for (int j=0; j<all_players.size()/2; ++j)
         {
-            ;
+            battle(j, all_players.size()-j-1, copy);
+            //for now, if it is odd, then the agent battles itself
         }
         
         //Stage II. deaths and births
         
         check_reproducability();//all new ones are born
-        kill_old();
+        kill_old();//old ones are killed
         
         //Stage III. storing data
-        
+        population.insert(std::make_pair(num_of_predators(), all_players.size()-num_of_predators()));
+        std::cout << " " << num_of_predators() << ":" << all_players.size()-num_of_predators() << std::endl;
+
     }
 }
 
@@ -90,7 +91,8 @@ void simulation::run_simulation(std::size_t iterations)
  */
 size_t simulation::num_of_predators()
 {
-    if (is_predator(all_players[all_players.size()-1])) //only predators are left in the pool
+    if (all_players.size() == 0) return 0;
+    else if (is_predator(all_players[all_players.size()-1]))//only predators are left in the pool
     {
         return all_players.size();
     }
@@ -121,16 +123,17 @@ bool tit_4_tat::check_cheated()//returns true if the agent was cheated last turn
 {
     return decieved;
 }
+
 /**
  member function battle. makes the agents fight against each other.
  @parameter: agent1 is the first agent's pointer
  @parameter: agent2 is the second agent's pointer
  */
 
-void simulation::battle(const std::size_t first, const std::size_t second)
+void simulation::battle(const std::size_t first, const std::size_t second, std::vector<std::shared_ptr<Agents>> copy)
 {
-    const std::shared_ptr<Agents> agent1(all_players[first]);
-    const std::shared_ptr<Agents> agent2(all_players[second]);
+    const std::shared_ptr<Agents> agent1(copy[first]);
+    const std::shared_ptr<Agents> agent2(copy[second]);
     agent1->sub_health(); agent2->sub_health(); //decrease both their healths
     if (agent1 == agent2)//if the agents are same, their strategies will be the same
     {
@@ -201,9 +204,11 @@ void simulation::check_reproducability()
 {
     for (std::size_t i = 0; i<all_players.size(); ++i)
     {
-        if (all_players[i]->get_food()>=30)
+        if (all_players[i]->get_food()>=reproReq)
         {
-            all_players[i]->add_food(-20);//10 is the cost for reproducing and 10 is the food carried over
+            all_players[i]->add_food(static_cast<int>(-reproReq+2));
+            //cost for reproducting is all the food except 2
+            
             //if the agent is a predator, it is added at the beginning. if the agent is tit_4_tat, it is added at the end
             (is_predator(all_players[i]))? all_players.insert(all_players.begin(), std::shared_ptr<Agents> (new predator)):all_players.insert(all_players.end(),std::shared_ptr<Agents> (new tit_4_tat));
         }
@@ -219,6 +224,7 @@ void simulation::kill_old()
 {
     for (std::size_t i = all_players.size()-1; i<all_players.size(); --i)
     {
-        if (all_players[i]->get_health() <= 0) all_players.erase(all_players.begin() + i);//if the agent has health 0, it is deleted
+        if (all_players[i]->get_health() <= 0) all_players.erase(all_players.begin() + i);
+        //if the agent has health 0, it is deleted
     }
 }
