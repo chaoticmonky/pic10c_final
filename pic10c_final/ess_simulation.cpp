@@ -202,6 +202,9 @@ void simulation::battle(const std::size_t first, const std::size_t second, std::
 */
 void simulation::check_reproducability()
 {
+//    std::for_each(all_players.begin(), all_players.end(), [&](std::shared_ptr<Agents> x){if (x->get_food() >=reproReq) x->add_food((-int(reproReq)+2));
+//        (is_predator(x))? all_players.insert(all_players.begin(), std::shared_ptr<Agents> (new predator)):all_players.insert(all_players.end(),std::shared_ptr<Agents> (new tit_4_tat));
+//    });
     for (std::size_t i = 0; i<all_players.size(); ++i)
     {
         if (all_players[i]->get_food()>=reproReq)
@@ -222,6 +225,7 @@ void simulation::check_reproducability()
  */
 void simulation::kill_old()
 {
+//    std::for_each(all_players.begin(), all_players.end(), [&](std::shared_ptr<Agents> x){if (x->get_health() <= 0) all_players.erase(x);});
     for (std::size_t i = all_players.size()-1; i<all_players.size(); --i)
     {
         if (all_players[i]->get_health() <= 0) all_players.erase(all_players.begin() + i);

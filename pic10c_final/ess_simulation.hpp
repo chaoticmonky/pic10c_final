@@ -85,12 +85,6 @@ public:
     void check_reproducability(); //checks if any agent can reproduce
     void kill_old();
     void display_pop();
-    void display_health()
-    {
-        for (auto i = 0; i!= all_players.size(); ++i) {
-            std::cout << all_players[i]->get_health() << ":health of the " << i << "th agent" << std::endl;
-        }
-    }
 };
 
 
