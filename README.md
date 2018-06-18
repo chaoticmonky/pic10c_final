@@ -1,7 +1,9 @@
 # pic10c_final
 Final Assignment for PIC 10C
 
-I had been reading works of a few evolutionary biologists, including the Selfish Gene by Richard Dawkins, the book that inspired me to write this simulator. In the book, Dawkins refers to a simulation made in excel to find the evolutionary stable strategy in one of the basic type of games: repetitive prisoner's dilemma. I will describe the basic of the game now:
+I had been reading works of a few evolutionary biologists, including the Selfish Gene by Richard Dawkins, the book that inspired me to write this simulator. In the book, Dawkins refers to a simulation made in excel to find the evolutionary stable strategy in one of the basic type of games: repetitive prisoner's dilemma. A link to the simulator can be seen here: http://bioquest.org/esteem/esteem_details.php?product_id=262.
+
+I will describe the basics of the game now:
 
 Game:
 1. There are agents in the pool. They have food and health as attributes and two possible actions during the game: Cooperate or Defect.
@@ -28,7 +30,6 @@ The simulation class stores all the agents in the pool as a vector of pointers t
 
 I'll now describe how each step 2-4 works.
 
-
 Battle stage: simulation::run_simulation function runs each iteration. it creates a copy of the pool and randomly shuffles this copy to make sure agents battle against other agents at random. std::random_shuffle algorithm is used for this. next, the function calls the simulation::battle function for all agents . Indices of two agents and a copy of the pool are sent as parameters and depending on the states of the agents, their food attribute is changed.
 
 Health Deduction stage: the health of both agents is deducted in the simulation::battle function, albiet before the battle even takes place, but that does not affect the simulation since the killing of old agents comes at the end.
@@ -37,5 +38,6 @@ Reproduction stage: this is covered by simulation::check_reproducability functio
 
 Killing stage: the all_players is iterated through, and any agent that has 0 health is killed using the vector::erase function. I thought about using std::for_each algorithm using a lambda function and a simple if statement, however that wasn't possible since all agents of same type are identical and there was no effcient way to delete an agent as well as update whole pool altogether (including shifting all other agents that followed the recently killed agent by one place to the left). The failed attempt can be seen to be commented out
 
+Finally, I did basic operator overloading to compare two agents to differentiate between the two types I included. This was used throughout the code, from counting the number of predators alive to the simulation::battle function's conditional statements. If I'd to say my code is lacking something, it is that my battle function is not generic, and uses more conditional statements than what I'd be happy with. However, despite this, my code is an upgrade to the simulation that was conducted in the excel sheet on the link above.
 
-Since my ideas for this project does not end with this quarter, I had to make sure the simulation was as generic as possible if different factors for it are changed. Primarily, I wanted to make sure that adding new agents with different strategies would be easy as the two agents used in this simulation are very basic.
+Since my ideas for this project does not end with this quarter, I had to make sure the simulation was as generic as possible if different factors for it are changed. Primarily, I wanted to make sure that adding new agents with different strategies would be easy as the two agents used in this simulation are very basic and I wish to further understand how evolutionary stable strategies are decided in more complex systems.
