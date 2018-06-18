@@ -30,7 +30,6 @@ The simulation class stores all the agents in the pool as a vector of pointers t
 
 I'll now describe how each step 2-4 works.
 
-
 Battle stage: simulation::run_simulation function runs each iteration. it creates a copy of the pool and randomly shuffles this copy to make sure agents battle against other agents at random. std::random_shuffle algorithm is used for this. next, the function calls the simulation::battle function for all agents . Indices of two agents and a copy of the pool are sent as parameters and depending on the states of the agents, their food attribute is changed.
 
 Health Deduction stage: the health of both agents is deducted in the simulation::battle function, albiet before the battle even takes place, but that does not affect the simulation since the killing of old agents comes at the end.
